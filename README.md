@@ -1,5 +1,5 @@
   This is an R package which implements the the circular factor model proposed in "Spatial voting models in circular spaces: A case study of the U.S. House of Representatives". 
-  The roll call voting data can be found at [here](http://voteview.com). The input data is an IxJ matrix where I represents the number of legislators (subjects) and J stands for the number of bills (items).
+  The roll call voting data can be found at [here](http://voteview.com). The input data is an IxJ matrix where I represents the number of legislators (subjects) and J stands for the number of bills (items). For roll call voting data, it is recommended to initialize democrates between ($-\pi/2$,0) and republicans between (0,$\pi/2$) for faster convergence and mixing.
   # Install Package
   devtools::install_github('Xingchen-Yu/SLFM1D')\
   library(SLFM1D)\
