@@ -6,4 +6,4 @@
   library(SLFM1D)\
   data(ymat)\
   set.seed(2021)\
-  posterior_chain = SLFM(ymat = ymat,n_pos=200,burnin=50,core=1)
+  posterior_chain = SLFM(ymat = ymat,n_pos=200,burnin=50,core=2)
