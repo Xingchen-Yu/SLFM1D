@@ -10,7 +10,7 @@ SLFM(
   burnin = 500,
   thin = 1,
   hyperparams = list(a = 1, b = 1/10, ccc_a = 1, ccc_b = 25, kappa_a = 1, omega_sd =
-    0.1, kappa_sd = 0.5, j_epi = 0.02, i_epi = 0.02, j_leap = 5, i_leap = 5, skip = 50,
+    0.1, kappa_sd = 0.5, j_epi = 0.04, i_epi = 0.02, j_leap = 5, i_leap = 5, skip = 50,
     jitter = T),
   initial_values = NULL,
   core = 2,
@@ -28,7 +28,7 @@ SLFM(
 
 \item{hyperparams}{Hyperparameters}
 
-\item{initial_values}{Initial values for input}
+\item{initial_values}{Initial values for input in the order of $kappa_j$, $beta_i$, $zeta_j$, $psi_j$,$omega$,$xi_inv$ (inverse of xi)}
 
 \item{core}{Number of cpu cores to use for parallel computing}
 

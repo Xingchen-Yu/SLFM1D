@@ -7,7 +7,7 @@
 #'@param burnin Burnin/warmup period for the MCMC
 #'@param thin Thining of the posterior chain, the default is 1
 #'@param hyperparams Hyperparameters
-#'@param initial_values Initial values for input
+#'@param initial_values Initial values for input in the order of $kappa_j$, $beta_i$, $zeta_j$, $psi_j$,$omega$,$xi_inv$ (inverse of xi)
 #'@param core Number of cpu cores to use for parallel computing
 #'@param cluster_seed Seed number for reproducibility when 2 or more cores are used.
 #'@return A list containing the posterior samples for each model parameter
@@ -27,7 +27,7 @@
 #'@export
 #'
 SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b = 1/10, ccc_a = 1, ccc_b=25,kappa_a = 1,omega_sd=0.1,kappa_sd=0.5,
-                                                                      j_epi = 0.02, i_epi = 0.02, j_leap = 5, i_leap = 5,skip = 50,jitter = T),
+                                                                      j_epi = 0.04, i_epi = 0.02, j_leap = 5, i_leap = 5,skip = 50,jitter = T),
                 initial_values=NULL,core=2,cluster_seed=1234){
   ### checking and installing required packages###
   # required_package = c('Rcpp','snowfall','RcppArmadillo')
@@ -63,8 +63,6 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
   nc = ncol(ymat)
 
   t_sig = rep(hyperparams[['kappa_sd']],nc)
-  omega = a/b
-  ccc = ccc_a/ccc_b
   skip_temp = hyperparams[['skip']]
   skip = ifelse(skip_temp>iter,iter,skip_temp)
 
@@ -75,14 +73,16 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     beta = initial_values[['beta']]
     tau_no = initial_values[['tau_no']]
     tau_yes = initial_values[['tau_yes']]
-
+    omega = initial_values[['omega']]
+    ccc = initial_values[['ccc']]
   }else{
 
     kappa = rep(0.1,nc)
     beta = runif(nr,-pi/2,pi/2)
     tau_no = runif(nc,-pi,pi)
     tau_yes = runif(nc,-pi,pi)
-
+    omega = a/b
+    ccc = ccc_a/ccc_b
   }
 
   if(jitter == T){
@@ -252,6 +252,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
       yes_master[,j] = tau_yes
       no_master[,j] = tau_no
       omega_master[j] = omega
+      ccc_master[j] = ccc
       kappa_master[,j] = kappa
       # pos_pred = pos_pred + do.call("cbind",lapply(waic_out,"[[",2))
       # pos_pred2 = pos_pred2 + temp
@@ -260,7 +261,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     }
   }
   sfStop()
-  return(list(beta=beta_master,psi=yes_master,zeta=no_master,omega=omega_master,kappa=kappa_master,likeli=likeli_chain))
+  return(list(beta=beta_master,psi=yes_master,zeta=no_master,kappa=kappa_master,omega=omega_master,xi_inv=ccc_master,likeli=likeli_chain))
 }
 
 
