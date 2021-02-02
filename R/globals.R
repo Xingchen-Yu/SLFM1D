@@ -1,0 +1,26 @@
+utils::globalVariables(
+  c(
+    "nr_par",
+    "nc_par",
+    "delta",
+    "delta2",
+    "leap",
+    "leap_tau",
+    "nr",
+    "nc",
+    'omega',
+    'cbeta_prior',
+    'beta',
+    'tau_yes',
+    'tau_no',
+    'ymat',
+    'kappa',
+    't_sig',
+    'kappa_a',
+    'ccc',
+    'delta_no',
+    'delta2_no',
+    'delta_yes',
+    'delta2_yes'
+  )
+)
