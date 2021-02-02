@@ -6,25 +6,6 @@
 
 using namespace Rcpp;
 
-// impute_NA
-arma::mat impute_NA(arma::uvec na, arma::uvec i_index, arma::uvec j_index, arma::mat ymat, arma::vec tau_yes, arma::vec tau_no, arma::vec beta, arma::vec kappa, const int n);
-RcppExport SEXP _SLFM1D_impute_NA(SEXP naSEXP, SEXP i_indexSEXP, SEXP j_indexSEXP, SEXP ymatSEXP, SEXP tau_yesSEXP, SEXP tau_noSEXP, SEXP betaSEXP, SEXP kappaSEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::uvec >::type na(naSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type i_index(i_indexSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type j_index(j_indexSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type ymat(ymatSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type tau_yes(tau_yesSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type tau_no(tau_noSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type kappa(kappaSEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(impute_NA(na, i_index, j_index, ymat, tau_yes, tau_no, beta, kappa, n));
-    return rcpp_result_gen;
-END_RCPP
-}
 // update_beta
 List update_beta(int t, arma::vec nr_par, arma::vec epsilon_vec, arma::vec epsilon2_vec, arma::vec leap_vec, int nc, double omega, arma::vec cbeta_prior, arma::vec beta, arma::vec tau_yes, arma::vec tau_no, arma::vec kappa, arma::mat ymat);
 RcppExport SEXP _SLFM1D_update_beta(SEXP tSEXP, SEXP nr_parSEXP, SEXP epsilon_vecSEXP, SEXP epsilon2_vecSEXP, SEXP leap_vecSEXP, SEXP ncSEXP, SEXP omegaSEXP, SEXP cbeta_priorSEXP, SEXP betaSEXP, SEXP tau_yesSEXP, SEXP tau_noSEXP, SEXP kappaSEXP, SEXP ymatSEXP) {
@@ -163,9 +144,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// impute_NA
+arma::mat impute_NA(arma::uvec na, arma::uvec i_index, arma::uvec j_index, arma::mat ymat, arma::vec tau_yes, arma::vec tau_no, arma::vec beta, arma::vec kappa, const int n);
+RcppExport SEXP _SLFM1D_impute_NA(SEXP naSEXP, SEXP i_indexSEXP, SEXP j_indexSEXP, SEXP ymatSEXP, SEXP tau_yesSEXP, SEXP tau_noSEXP, SEXP betaSEXP, SEXP kappaSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uvec >::type na(naSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type i_index(i_indexSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type j_index(j_indexSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type ymat(ymatSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type tau_yes(tau_yesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type tau_no(tau_noSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(impute_NA(na, i_index, j_index, ymat, tau_yes, tau_no, beta, kappa, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_SLFM1D_impute_NA", (DL_FUNC) &_SLFM1D_impute_NA, 9},
     {"_SLFM1D_update_beta", (DL_FUNC) &_SLFM1D_update_beta, 13},
     {"_SLFM1D_update_tau_yes", (DL_FUNC) &_SLFM1D_update_tau_yes, 11},
     {"_SLFM1D_update_tau_no", (DL_FUNC) &_SLFM1D_update_tau_no, 11},
@@ -173,6 +172,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_SLFM1D_update_kappa", (DL_FUNC) &_SLFM1D_update_kappa, 11},
     {"_SLFM1D_waic_cpp", (DL_FUNC) &_SLFM1D_waic_cpp, 8},
     {"_SLFM1D_predict", (DL_FUNC) &_SLFM1D_predict, 8},
+    {"_SLFM1D_impute_NA", (DL_FUNC) &_SLFM1D_impute_NA, 9},
     {NULL, NULL, 0}
 };
 

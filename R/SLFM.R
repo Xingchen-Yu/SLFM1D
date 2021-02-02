@@ -44,7 +44,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
   sfClusterSetupRNG( type="RNGstream",seed=cluster_seed)
   sfLibrary("Rcpp", character.only=TRUE)
   sfLibrary("RcppArmadillo", character.only=TRUE)
-  sfLibrary('SLFM1D', character.only=TRUE)
+  # sfLibrary('SLFM1D', character.only=TRUE)
   # sfExport(list=c('RcppCode'),namespace = 'SLFM1D')
   #######################################################
 
@@ -110,7 +110,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
   ######parallel miscellaneous############################
   nr_par = round(seq(0,nr,length.out = core+1))
   nc_par = round(seq(0,nc,length.out = core+1))
-  sfExport(list=ls())
+  sfExport(list=ls(),local = T)
   na = which(is.na(ymat==T)) - 1
   len_na = length(na)
   na.position = which(is.na(ymat)==T, arr.ind = T)
@@ -183,7 +183,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     }
     ################################################################################
     ### Update scale parameter \kappa
-    out = sfLapply(node,wrapper_kappa,nc_par,nr,beta,tau_yes,tau_no,kappa,ymat,kappa_a,ccc,t_sig)
+    out = sfLapply(node,function(t) update_kappa(t,nc_par,nr,beta,tau_yes,tau_no,kappa,ymat,kappa_a,ccc,t_sig))
     kappa = unlist(lapply(out,"[[",1))
     sfExport("kappa")
     ###update hyperprior parameter for \kappa
@@ -196,7 +196,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     kappa_accept_rs_all = kappa_accept_rs_all  + haha
     ################################################################################
     ### update ideal points \beta_i's
-    out = sfLapply(node,wrapper_beta,nr_par,delta,delta2,leap,nc,omega,cbeta_prior,beta,tau_yes,tau_no,kappa,ymat)
+    out = sfLapply(node,function(t) update_beta(t,nr_par,delta,delta2,leap,nc,omega,cbeta_prior,beta,tau_yes,tau_no,kappa,ymat))
     beta = unlist(lapply(out,"[[",1))
     beta_ratio = sum(sapply(out,"[[",2))/nr
 
@@ -205,7 +205,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     sfExport("beta")
     ################################################################################
     ### update \psi_j's
-    out = sfLapply(node,wrapper_yes,nc_par,delta_yes,delta2_yes,leap_tau,nr,beta,tau_yes,tau_no,kappa,ymat)
+    out = sfLapply(node,function(t) update_tau_yes(t,nc_par,delta_yes,delta2_yes,leap_tau,nr,beta,tau_yes,tau_no,kappa,ymat))
     tau_yes = unlist(lapply(out,"[[",1))
     yes_ratio = sum(sapply(out,"[[",2))/nc
 
@@ -214,7 +214,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     sfExport("tau_yes")
     ################################################################################
     ### update \zeta_j's
-    out = sfLapply(node,wrapper_no,nc_par,delta_no,delta2_no,leap_tau,nr,beta,tau_yes,tau_no,kappa,ymat)
+    out = sfLapply(node,function(t) update_tau_no(t,nc_par,delta_no,delta2_no,leap_tau,nr,beta,tau_yes,tau_no,kappa,ymat))
     tau_no = unlist(lapply(out,"[[",1))
     no_ratio = sum(sapply(out,"[[",2))/nc
 
@@ -230,7 +230,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     sfExport('omega',"cbeta_prior")
 
     ### compute joint loglikelihood
-    waic_out = sfLapply(node,wrapper_waic,nc_par,nr,beta,tau_yes,tau_no,kappa,ymat)
+    waic_out = sfLapply(node,function(t) waic_cpp(t,nc_par,nr,beta,tau_yes,tau_no,kappa,ymat))
     temp = do.call("cbind",lapply(waic_out,"[[",1))
     sum_temp = sum(temp)
     likeli_chain[i] = sum_temp
