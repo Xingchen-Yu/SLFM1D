@@ -19,7 +19,7 @@ Depends:
     snow(>= 0.4-3),
     rlecuyer(>= 0.3-5)
 RoxygenNote: 7.1.1
-imports:
+Imports:
  utils,
  stats
 LinkingTo: 
