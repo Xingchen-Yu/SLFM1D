@@ -43,5 +43,5 @@ Fits a one-dimensional Spherical Latent Factor Model (Circular Factor Model) on 
 \examples{
 data(ymat)
 set.seed(2021)
-posterior_chain = SLFM(ymat = ymat,n_pos=200,burnin=50,core=1)
+posterior_chain = SLFM(ymat = ymat,n_pos=200,burnin=50,core=2)
 }

@@ -4,15 +4,15 @@ Title: Spherical Latent Factor Model
 Version: 0.1.0
 Author: c(person("Xingchen", "Yu", email = "xvy5021@gmail.com", role = c("cre","aut")),
     person("Abel", "Rodriguez", email = "abelrod@uw.edu ", role = c("aut")))
-Maintainer: Xingchen Yu <xvy5021@email.com>    
-BugReports: Xingchen Yu <https://github.com/Xingchen-Yu/SLFM/issues>
-URL: https://github.com/Xingchen-Yu/SLFM/
+Maintainer: Xingchen Yu <xvy5021@gmail.com>    
+BugReports: Xingchen Yu <https://github.com/Xingchen-Yu/SLFM1D/issues>
+URL: https://github.com/Xingchen-Yu/SLFM1D/
 Description: Fits a one-dimensional Spherical Latent Factor Model (Circular Factor Model) on a dataset consists of binary responses. See paper (attach link)
 License: to be determined
 Encoding: UTF-8
 LazyData: true
 Depends: 
-    R (>= 4.0.3),
+    R (>= 4.0.0),
     Rcpp (>= 1.0.5),
     RcppArmadillo (>= 0.10.1.2.0),
     snowfall (>= 1.84-6.1),
@@ -25,5 +25,3 @@ imports:
 LinkingTo: 
     Rcpp,
     RcppArmadillo
-Imports: 
-    Rcpp

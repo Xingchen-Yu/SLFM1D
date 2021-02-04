@@ -14,38 +14,26 @@
 #'@examples
 #'data(ymat)
 #'set.seed(2021)
-#'posterior_chain = SLFM(ymat = ymat,n_pos=200,burnin=50,core=1)
-#'@importFrom stats "rgamma"
-#'@importFrom stats "runif"
-#'@import "snow"
+#'posterior_chain = SLFM(ymat = ymat,n_pos=200,burnin=50,core=2)
+#'@useDynLib SLFM1D, .registration = TRUE
 #'@import "snowfall"
-#'@import "Rcpp"
-#'@import "RcppArmadillo"
+#'@import "snow"
 #'@import "rlecuyer"
-#'@useDynLib SLFM1D
-#' @importFrom Rcpp "sourceCpp"
+#'@import "RcppArmadillo"
+#'@import "Rcpp"
+#' @importFrom "stats" "rgamma" "runif"
 #'@export
 #'
 SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b = 1/10, ccc_a = 1, ccc_b=25,kappa_a = 1,omega_sd=0.1,kappa_sd=0.5,
                                                                       j_epi = 0.04, i_epi = 0.02, j_leap = 5, i_leap = 5,skip = 50,jitter = T),
                 initial_values=NULL,core=2,cluster_seed=1234){
-  ### checking and installing required packages###
-  # required_package = c('Rcpp','snowfall','RcppArmadillo')
-  # check_package = sum(unlist(lapply(required_package, require, character.only = TRUE)))==3
-  # if(check_package ==F){
-  #   install.packages(required_package,repos = "http://cran.us.r-project.org")
-  #   lapply(required_package, require, character.only = TRUE)
-  # }
+
   #######################################################
-  # print('Compiling Source Code')
-  # sourceCpp(code=RcppCode)
-  # print('Compiling done')
-  sfInit(parallel=TRUE,cpus=core)
-  sfClusterSetupRNG( type="RNGstream",seed=cluster_seed)
-  sfLibrary("Rcpp", character.only=TRUE)
-  sfLibrary("RcppArmadillo", character.only=TRUE)
-  sfLibrary('SLFM1D', character.only=TRUE)
-  # sfExport(list=c('RcppCode'),namespace = 'SLFM1D')
+  snowfall::sfInit(parallel=TRUE,cpus=core)
+  snowfall::sfClusterSetupRNG( type="RNGstream",seed=cluster_seed)
+  # sfLibrary("Rcpp", character.only=TRUE)
+  # sfLibrary("RcppArmadillo", character.only=TRUE)
+  # sfLibrary('SLFM1D', character.only=TRUE)
   #######################################################
 
   iter = n_pos * thin + burnin
@@ -130,13 +118,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
   kappa_accept_rs = rep(0,nc)
   kappa_accept_rs_all = no_accept_rs_all = yes_accept_rs_all = rep(0,nc)
   #######################################
-  # if(core>1){
-  #   print('loading Rcpp code to all cores')
-  # }
-  # sfClusterEval(sourceCpp(code = RcppCode))
-  # sfClusterEval(sourceCpp(file="./src/functions.cpp"))
-  # sfClusterEval(sourceCpp(file="./src/RcppExports.cpp"))
-  # sfClusterEval(sourceCpp(file="./src/functions_header.h"))
+
   core_1 = core - 1
   node = 0:core_1
   j = 1
@@ -170,8 +152,6 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
         kappa_mod = out[[2]]
 
         kappa_accept_rs = rep(0,nc)
-        # print(paste0('percent kappa changed ', kappa_mod))
-        # print(paste0('min kappa acceptance ', kappa_skip))
       }
       sfExport("delta",'delta2','delta_yes','delta2_yes','delta_no','delta2_no','t_sig','leap','leap_tau')
 
@@ -183,7 +163,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     }
     ################################################################################
     ### Update scale parameter \kappa
-    out = sfLapply(node,wrapper_kappa,nc_par,nr,beta,tau_yes,tau_no,kappa,ymat,kappa_a,ccc,t_sig)
+    out = sfLapply(node,update_kappa,nc_par,nr,beta,tau_yes,tau_no,kappa,ymat,kappa_a,ccc,t_sig)
     kappa = unlist(lapply(out,"[[",1))
     sfExport("kappa")
     ###update hyperprior parameter for \kappa
@@ -196,7 +176,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     kappa_accept_rs_all = kappa_accept_rs_all  + haha
     ################################################################################
     ### update ideal points \beta_i's
-    out = sfLapply(node,wrapper_beta,nr_par,delta,delta2,leap,nc,omega,cbeta_prior,beta,tau_yes,tau_no,kappa,ymat)
+    out = sfLapply(node,update_beta,nr_par,delta,delta2,leap,nc,omega,cbeta_prior,beta,tau_yes,tau_no,kappa,ymat)
     beta = unlist(lapply(out,"[[",1))
     beta_ratio = sum(sapply(out,"[[",2))/nr
 
@@ -205,7 +185,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     sfExport("beta")
     ################################################################################
     ### update \psi_j's
-    out = sfLapply(node,wrapper_yes,nc_par,delta_yes,delta2_yes,leap_tau,nr,beta,tau_yes,tau_no,kappa,ymat)
+    out = sfLapply(node,update_tau_yes,nc_par,delta_yes,delta2_yes,leap_tau,nr,beta,tau_yes,tau_no,kappa,ymat)
     tau_yes = unlist(lapply(out,"[[",1))
     yes_ratio = sum(sapply(out,"[[",2))/nc
 
@@ -214,7 +194,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     sfExport("tau_yes")
     ################################################################################
     ### update \zeta_j's
-    out = sfLapply(node,wrapper_no,nc_par,delta_no,delta2_no,leap_tau,nr,beta,tau_yes,tau_no,kappa,ymat)
+    out = sfLapply(node,update_tau_no,nc_par,delta_no,delta2_no,leap_tau,nr,beta,tau_yes,tau_no,kappa,ymat)
     tau_no = unlist(lapply(out,"[[",1))
     no_ratio = sum(sapply(out,"[[",2))/nc
 
@@ -230,7 +210,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
     sfExport('omega',"cbeta_prior")
 
     ### compute joint loglikelihood
-    waic_out = sfLapply(node,wrapper_waic,nc_par,nr,beta,tau_yes,tau_no,kappa,ymat)
+    waic_out = sfLapply(node,waic_cpp,nc_par,nr,beta,tau_yes,tau_no,kappa,ymat)
     temp = do.call("cbind",lapply(waic_out,"[[",1))
     sum_temp = sum(temp)
     likeli_chain[i] = sum_temp
@@ -260,7 +240,7 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
       j = j + 1
     }
   }
-  sfStop()
+  snowfall::sfStop()
   return(list(beta=beta_master,psi=yes_master,zeta=no_master,kappa=kappa_master,omega=omega_master,xi_inv=ccc_master,likeli=likeli_chain))
 }
 

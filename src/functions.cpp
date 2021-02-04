@@ -331,8 +331,7 @@ arma::vec gradient_tau_no(double tau_no,arma::vec beta,double shape,const int nr
   return please;
 }
 
-//'@useDynLib SLFM1D
-//'@export
+
 // [[Rcpp::export]]
 arma::mat impute_NA(arma::uvec na, arma::uvec i_index, arma::uvec j_index, arma::mat ymat,
                     arma::vec tau_yes, arma::vec tau_no, arma::vec beta, arma::vec kappa, const int n){
@@ -347,8 +346,7 @@ arma::mat impute_NA(arma::uvec na, arma::uvec i_index, arma::uvec j_index, arma:
 
   return ymat;
 }
-//'@useDynLib SLFM1D
-//'@export
+
 // [[Rcpp::export]]
 List update_beta(int t, arma::vec nr_par, arma::vec epsilon_vec, arma::vec epsilon2_vec, arma::vec leap_vec,int nc, double omega,
                  arma::vec cbeta_prior, arma::vec beta,arma::vec tau_yes,arma::vec tau_no,arma::vec kappa,arma::mat ymat){
@@ -404,8 +402,7 @@ List update_beta(int t, arma::vec nr_par, arma::vec epsilon_vec, arma::vec epsil
   }
   return List::create(beta_out,e_s,accept_chain);
 }
-//'@useDynLib SLFM1D
-//'@export
+
 // [[Rcpp::export]]
 List update_tau_yes(int t, arma::vec nc_par,arma::vec epsilon_vec, arma::vec epsilon2_vec, arma::vec leap_vec, int nr,
                     arma::vec beta,arma::vec tau_yes,arma::vec tau_no,arma::vec kappa,arma::mat ymat){
@@ -466,8 +463,7 @@ List update_tau_yes(int t, arma::vec nc_par,arma::vec epsilon_vec, arma::vec eps
   }
   return List::create(yes_out,e_s,accept_chain);
 }
-//'@useDynLib SLFM1D
-//'@export
+
 // [[Rcpp::export]]
 List update_tau_no(int t,arma::vec nc_par, arma::vec epsilon_vec, arma::vec epsilon2_vec, arma::vec leap_vec, int nr,
                    arma::vec beta,arma::vec yes_out,arma::vec tau_no,arma::vec kappa,arma::mat ymat){
@@ -528,8 +524,7 @@ List update_tau_no(int t,arma::vec nc_par, arma::vec epsilon_vec, arma::vec epsi
   }
   return List::create(no_out,e_s,accept_chain);
 }
-//'@useDynLib SLFM1D
-//'@export
+
 // [[Rcpp::export]]
 List update_omega(double omega, arma::vec beta, int nr, double a, double b,double omega_sd){
   double eta = log(omega);
@@ -545,8 +540,7 @@ List update_omega(double omega, arma::vec beta, int nr, double a, double b,doubl
   }
   return List::create(omega_new,accept_out);
 }
-//'@useDynLib SLFM1D
-//'@export
+
 // [[Rcpp::export]]
 List update_kappa(int t,arma::vec nc_par, int nr,arma::vec beta, arma::vec yes_out, arma::vec no_out,
                   arma::vec kappa,arma::mat ymat, double kappa_a, double ccc, arma::vec t_sig_vec){
@@ -581,8 +575,7 @@ List update_kappa(int t,arma::vec nc_par, int nr,arma::vec beta, arma::vec yes_o
   }
   return List::create(kappa_out,e_s,accept_chain);
 }
-//'@useDynLib SLFM1D
-//'@export
+
 // [[Rcpp::export]]
 List waic_cpp(int t, arma::vec nc_par,int nr,arma::vec beta, arma::vec tau_yes, arma::vec tau_no, arma::vec kappa,arma::mat ymat){
   int start = nc_par(t);
@@ -609,8 +602,7 @@ List waic_cpp(int t, arma::vec nc_par,int nr,arma::vec beta, arma::vec tau_yes, 
   }
   return List::create(amat,amat_exp,amat_2);
 }
-//'@useDynLib SLFM1D
-//'@export
+
 // [[Rcpp::export]]
 arma::mat predict(int t, arma::vec nc_par,int nr,arma::vec beta, arma::vec tau_yes, arma::vec tau_no, arma::vec kappa,arma::mat ymat){
   int start = nc_par(t);
