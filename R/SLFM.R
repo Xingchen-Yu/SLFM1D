@@ -27,9 +27,6 @@ SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b =
   #######################################################
   sfInit(parallel=TRUE,cpus=core)
   sfClusterSetupRNG( type="RNGstream",seed=cluster_seed)
-  # sfLibrary("Rcpp", character.only=TRUE)
-  # sfLibrary("RcppArmadillo", character.only=TRUE)
-  # sfLibrary('SLFM1D', character.only=TRUE)
   #######################################################
 
   iter = n_pos * thin + burnin
