@@ -17,6 +17,8 @@
 #'posterior_chain = SLFM(ymat = ymat,n_pos=200,burnin=50,core=2)
 #'@importFrom "snowfall" sfInit sfClusterSetupRNG sfLapply sfStop sfExport
 #'@import rlecuyer
+#'@import snow
+#'@import RcppArmadillo
 #' @importFrom "stats" "rgamma" "runif"
 #'@export
 #'
