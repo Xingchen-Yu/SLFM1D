@@ -22,8 +22,8 @@
 #' @importFrom "stats" "rgamma" "runif"
 #'@export
 #'
-SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b = 1/10, ccc_a = 1, ccc_b=25,kappa_a = 1,omega_sd=0.1,kappa_sd=0.5,
-                                                                      j_epi = 0.04, i_epi = 0.02, j_leap = 5, i_leap = 5,skip = 50,jitter = T),
+SLFM = function(ymat,n_pos=1000,burnin=500,thin = 1, hyperparams=list(a = 1, b = 1/10, ccc_a = 1, ccc_b=25, kappa_a = 1, omega_sd=0.1, kappa_sd=0.5,
+                                                                      j_epi = 0.04, i_epi = 0.02, j_leap = 5, i_leap = 5,skip = 50, jitter = T),
                 initial_values=NULL,core=2,cluster_seed=1234){
 
   #######################################################
