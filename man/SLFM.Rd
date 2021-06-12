@@ -28,7 +28,7 @@ SLFM(
 
 \item{hyperparams}{Hyperparameters}
 
-\item{initial_values}{Initial values for input in the order of $kappa_j$, $beta_i$, $zeta_j$, $psi_j$,$omega$,$xi_inv$ (inverse of xi)}
+\item{initial_values}{Initial values for input in the order of \eqn{kappa_j}, $beta_i$, $zeta_j$, $psi_j$,$omega$,$xi_inv$ (inverse of xi)}
 
 \item{core}{Number of cpu cores to use for parallel computing}
 

@@ -7,7 +7,7 @@
 #'@param burnin Burnin/warmup period for the MCMC
 #'@param thin Thining of the posterior chain, the default is 1
 #'@param hyperparams Hyperparameters
-#'@param initial_values Initial values for input in the order of $kappa_j$, $beta_i$, $zeta_j$, $psi_j$,$omega$,$xi_inv$ (inverse of xi)
+#'@param initial_values Initial values for input in the order of \eqn{kappa_j}, $beta_i$, $zeta_j$, $psi_j$,$omega$,$xi_inv$ (inverse of xi)
 #'@param core Number of cpu cores to use for parallel computing
 #'@param cluster_seed Seed number for reproducibility when 2 or more cores are used.
 #'@return A list containing the posterior samples for each model parameter
